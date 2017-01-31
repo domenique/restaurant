@@ -2,19 +2,20 @@ package dddeurope;
 
 class Cook implements OrderHandler {
 
-  private static final int COOKTIME = 2000;
   private final OrderHandler next;
   private String name;
+  private int cookTime;
 
-  public Cook(OrderHandler next, String name) {
+  public Cook(OrderHandler next, String name, int cookTime) {
     this.next = next;
     this.name = name;
+    this.cookTime = cookTime;
   }
 
   public void handle(Order order) {
     System.out.println("Cook " + name + " is cooking " + order);
-    sleep(COOKTIME);
-    order.setCookTime(COOKTIME);
+    sleep(cookTime);
+    order.setCookTime(cookTime);
     next.handle(order);
   }
 
