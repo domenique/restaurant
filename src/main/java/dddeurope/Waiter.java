@@ -11,6 +11,7 @@ class Waiter {
   }
 
   UUID placeOrder(Order order) {
+    System.out.println("Taking order");
     orderHandler.handle(order);
     return order.getUuid();
   }
