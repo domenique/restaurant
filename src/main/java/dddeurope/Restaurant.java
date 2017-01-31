@@ -13,7 +13,7 @@ class Restaurant {
     Cook jamie = new Cook(assistantManager, "Jamie Oliver");
     Cook piet = new Cook(assistantManager, "Piet Huysentruyt");
 
-    Waiter waiter = new Waiter(new Repeater(Arrays.asList(gordon, jamie, piet)));
+    Waiter waiter = new Waiter(new RoundRobinRepeater(Arrays.asList(gordon, jamie, piet)));
 
     int totalTime = 0;
     for (int i = 0; i < 10; i++) {
