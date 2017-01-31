@@ -1,23 +1,29 @@
 package dddeurope;
 
 import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.LinkedBlockingDeque;
 
 class MoreFairRepeater implements OrderHandler {
 
-  private List<ThreadedHandler> handlers;
+  private Queue<ThreadedHandler> handlers;
 
   public MoreFairRepeater(List<ThreadedHandler> handlers) {
-    this.handlers = handlers;
+    this.handlers = new LinkedBlockingDeque<>();
+    this.handlers.addAll(handlers);
   }
 
   @Override
   public void handle(Order order) {
     while (true) {
-      for (ThreadedHandler handler : handlers) {
+      ThreadedHandler handler = handlers.poll();
+      try {
         if (handler.getQueueSize() < 5) {
           handler.handle(order);
           return;
         }
+      } finally {
+        handlers.add(handler);
       }
       sleep(1000);
     }

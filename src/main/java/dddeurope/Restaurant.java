@@ -14,21 +14,22 @@ class Restaurant {
     OrderHandlerPrinter orderPrinter = new OrderHandlerPrinter();
 
     ThreadedHandler assistantManager = new ThreadedHandler(new AssistantManager(orderPrinter), "Threaded John The Manager");
-    ThreadedHandler gordon = new ThreadedHandler(new Cook(assistantManager, "Gordon Ramsy", 420), "Threaded Gordon");
-    ThreadedHandler jamie = new ThreadedHandler(new Cook(assistantManager, "Jamie Oliver", 666), "Threaded Jamiee");
-    ThreadedHandler piet = new ThreadedHandler(new Cook(assistantManager, "Piet Huysentruyt", 2000), "Threaded Piet");
+    ThreadedHandler gordon = new ThreadedHandler(new Cook(assistantManager, "Gordon Ramsy", 1000), "Threaded Gordon");
+    ThreadedHandler jamie = new ThreadedHandler(new Cook(assistantManager, "Jamie Oliver", 1303), "Threaded Jamiee");
+    ThreadedHandler piet = new ThreadedHandler(new Cook(assistantManager, "Piet Huysentruyt", 2500), "Threaded Piet");
 
     threadedHandlers.add(assistantManager);
     threadedHandlers.add(gordon);
     threadedHandlers.add(jamie);
     threadedHandlers.add(piet);
 
-    startMonitoring(threadedHandlers);
 
     ThreadedHandler americanQueueStyle = new ThreadedHandler(new MoreFairRepeater(asList(gordon, jamie, piet)), "Threaded More Fair Repeater for cooks");
     threadedHandlers.add(americanQueueStyle);
 
     Waiter waiter = new Waiter(americanQueueStyle);
+
+    startMonitoring(threadedHandlers);
 
     for (ThreadedHandler handler : threadedHandlers) {
       handler.start();
