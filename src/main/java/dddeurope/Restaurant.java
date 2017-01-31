@@ -14,9 +14,9 @@ class Restaurant {
     OrderHandlerPrinter orderPrinter = new OrderHandlerPrinter();
 
     ThreadedHandler assistantManager = new ThreadedHandler(new AssistantManager(orderPrinter), "Threaded John The Manager");
-    ThreadedHandler gordon = new ThreadedHandler(new Cook(assistantManager, "Gordon Ramsy", 1000), "Threaded Gordon");
-    ThreadedHandler jamie = new ThreadedHandler(new Cook(assistantManager, "Jamie Oliver", 1303), "Threaded Jamiee");
-    ThreadedHandler piet = new ThreadedHandler(new Cook(assistantManager, "Piet Huysentruyt", 2500), "Threaded Piet");
+    ThreadedHandler gordon = new ThreadedHandler(new TimeToLiveChecker(new Cook(assistantManager, "Gordon Ramsy", 1000)), "Threaded Gordon");
+    ThreadedHandler jamie = new ThreadedHandler(new TimeToLiveChecker(new Cook(assistantManager, "Jamie Oliver", 1303)), "Threaded Jamiee");
+    ThreadedHandler piet = new ThreadedHandler(new TimeToLiveChecker(new Cook(assistantManager, "Piet Huysentruyt", 2500)), "Threaded Piet");
 
     threadedHandlers.add(assistantManager);
     threadedHandlers.add(gordon);

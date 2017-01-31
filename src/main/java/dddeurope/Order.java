@@ -4,8 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-class Order {
+class Order implements SubjectToTimeToLive {
 
+  private final long creationTime;
   private UUID uuid;
   private int tableNumber;
   private List<Item> items = new ArrayList<>();
@@ -17,6 +18,7 @@ class Order {
 
   Order() {
     uuid = UUID.randomUUID();
+    creationTime = System.currentTimeMillis();
   }
 
   UUID getUuid() {
@@ -69,4 +71,10 @@ class Order {
   public int getCookTime() {
     return cookTime;
   }
+
+  @Override
+  public long getCreationTime() {
+    return creationTime;
+  }
+
 }
