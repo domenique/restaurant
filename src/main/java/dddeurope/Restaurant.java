@@ -10,6 +10,7 @@ import static java.util.Arrays.asList;
 class Restaurant {
 
   public static void main(String[] args) {
+    // create
     List<ThreadedHandler> threadedHandlers = new ArrayList<>();
     Cashier cashier = new Cashier();
 
@@ -30,17 +31,21 @@ class Restaurant {
     threadedHandlers.add(kitchen);
 
     Waiter waiter = new Waiter(topicBasedPublishSubscribe);
+
+    //subscribe
     topicBasedPublishSubscribe.subscribe("BillCalculated", cashier);
     topicBasedPublishSubscribe.subscribe("FoodCooked", assistantManager);
     topicBasedPublishSubscribe.subscribe("OrderPlaced", kitchen);
 
 
+    //start
     startMonitoring(threadedHandlers);
 
     for (ThreadedHandler handler : threadedHandlers) {
       handler.start();
     }
 
+    // stable - feed in orders
     int totalTime = order(waiter, 100);
     System.out.println("Total cooktime : " + totalTime);
   }
