@@ -11,14 +11,14 @@ class Restaurant {
 
   public static void main(String[] args) {
     List<ThreadedHandler> threadedHandlers = new ArrayList<>();
-    OrderHandlerPrinter orderPrinter = new OrderHandlerPrinter();
+    Cashier cashier = new Cashier();
 
     TopicBasedPublishSubscribe topicBasedPublishSubscribe = new TopicBasedPublishSubscribe();
 
-    ThreadedHandler assistantManager = new ThreadedHandler(new AssistantManager(orderPrinter), "Threaded John The Manager");
-    ThreadedHandler gordon = new ThreadedHandler(new TimeToLiveChecker(new Cook(assistantManager, "Gordon Ramsy", 1000)), "Threaded Gordon");
-    ThreadedHandler jamie = new ThreadedHandler(new TimeToLiveChecker(new Cook(assistantManager, "Jamie Oliver", 1303)), "Threaded Jamiee");
-    ThreadedHandler piet = new ThreadedHandler(new TimeToLiveChecker(new Cook(assistantManager, "Piet Huysentruyt", 2500)), "Threaded Piet");
+    ThreadedHandler assistantManager = new ThreadedHandler(new AssistantManager(topicBasedPublishSubscribe), "Threaded John The Manager");
+    ThreadedHandler gordon = new ThreadedHandler(new TimeToLiveChecker(new Cook(topicBasedPublishSubscribe, "Gordon Ramsy", 1000)), "Threaded Gordon");
+    ThreadedHandler jamie = new ThreadedHandler(new TimeToLiveChecker(new Cook(topicBasedPublishSubscribe, "Jamie Oliver", 1303)), "Threaded Jamie");
+    ThreadedHandler piet = new ThreadedHandler(new TimeToLiveChecker(new Cook(topicBasedPublishSubscribe, "Piet Huysentruyt", 2500)), "Threaded Piet");
 
     threadedHandlers.add(assistantManager);
     threadedHandlers.add(gordon);
@@ -26,12 +26,14 @@ class Restaurant {
     threadedHandlers.add(piet);
 
 
-    ThreadedHandler americanQueueStyle = new ThreadedHandler(new MoreFairRepeater(asList(gordon, jamie, piet)), "Threaded More Fair Repeater for cooks");
-    threadedHandlers.add(americanQueueStyle);
+    ThreadedHandler kitchen = new ThreadedHandler(new MoreFairRepeater(asList(gordon, jamie, piet)), "Threaded More Fair Repeater for cooks");
+    threadedHandlers.add(kitchen);
 
     Waiter waiter = new Waiter(topicBasedPublishSubscribe);
+    topicBasedPublishSubscribe.subscribe("BillCalculated", cashier);
+    topicBasedPublishSubscribe.subscribe("FoodCooked", assistantManager);
+    topicBasedPublishSubscribe.subscribe("OrderPlaced", kitchen);
 
-    topicBasedPublishSubscribe.subscribe("OrderPlaced", americanQueueStyle);
 
     startMonitoring(threadedHandlers);
 

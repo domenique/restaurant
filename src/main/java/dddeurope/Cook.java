@@ -2,12 +2,12 @@ package dddeurope;
 
 class Cook implements OrderHandler {
 
-  private final OrderHandler next;
+  private final Publisher publisher;
   private String name;
   private int cookTime;
 
-  public Cook(OrderHandler next, String name, int cookTime) {
-    this.next = next;
+  public Cook(Publisher publisher, String name, int cookTime) {
+    this.publisher = publisher;
     this.name = name;
     this.cookTime = cookTime;
   }
@@ -16,7 +16,7 @@ class Cook implements OrderHandler {
     System.out.println("Cook " + name + " is cooking " + order);
     sleep(cookTime);
     order.setCookTime(cookTime);
-    next.handle(order);
+    publisher.publish("FoodCooked", order);
   }
 
   private void sleep(int cooktime) {

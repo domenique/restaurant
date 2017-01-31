@@ -1,6 +1,6 @@
 package dddeurope;
 
-class OrderHandlerPrinter implements OrderHandler {
+class Cashier implements OrderHandler {
 
   public void handle(Order order) {
     System.out.println(order);
