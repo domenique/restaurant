@@ -1,5 +1,7 @@
 package dddeurope;
 
+import java.util.Arrays;
+
 class Restaurant {
 
   public static void main(String[] args) {
@@ -7,9 +9,11 @@ class Restaurant {
 
     AssistantManager assistantManager = new AssistantManager(orderPrinter);
 
-    Cook cook = new Cook(assistantManager);
+    Cook gordon = new Cook(assistantManager, "Gordon Ramsy");
+    Cook jamie = new Cook(assistantManager, "Jamie Oliver");
+    Cook piet = new Cook(assistantManager, "Piet Huysentruyt");
 
-    Waiter waiter = new Waiter(cook);
+    Waiter waiter = new Waiter(new Repeater(Arrays.asList(gordon, jamie, piet)));
 
     int totalTime = 0;
     for (int i = 0; i < 10; i++) {
