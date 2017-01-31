@@ -4,15 +4,16 @@ import java.util.UUID;
 
 class Waiter {
 
-  private final OrderHandler orderHandler;
+  private Publisher publisher;
 
-  Waiter(OrderHandler orderHandler) {
-    this.orderHandler = orderHandler;
+  public Waiter(Publisher publisher) {
+    this.publisher = publisher;
   }
 
   UUID placeOrder(Order order) {
     System.out.println("Taking order");
-    orderHandler.handle(order);
+    publisher.publish("OrderPlaced", order);
+
     return order.getUuid();
   }
 }

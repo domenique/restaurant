@@ -13,6 +13,8 @@ class Restaurant {
     List<ThreadedHandler> threadedHandlers = new ArrayList<>();
     OrderHandlerPrinter orderPrinter = new OrderHandlerPrinter();
 
+    TopicBasedPublishSubscribe topicBasedPublishSubscribe = new TopicBasedPublishSubscribe();
+
     ThreadedHandler assistantManager = new ThreadedHandler(new AssistantManager(orderPrinter), "Threaded John The Manager");
     ThreadedHandler gordon = new ThreadedHandler(new TimeToLiveChecker(new Cook(assistantManager, "Gordon Ramsy", 1000)), "Threaded Gordon");
     ThreadedHandler jamie = new ThreadedHandler(new TimeToLiveChecker(new Cook(assistantManager, "Jamie Oliver", 1303)), "Threaded Jamiee");
@@ -27,7 +29,9 @@ class Restaurant {
     ThreadedHandler americanQueueStyle = new ThreadedHandler(new MoreFairRepeater(asList(gordon, jamie, piet)), "Threaded More Fair Repeater for cooks");
     threadedHandlers.add(americanQueueStyle);
 
-    Waiter waiter = new Waiter(americanQueueStyle);
+    Waiter waiter = new Waiter(topicBasedPublishSubscribe);
+
+    topicBasedPublishSubscribe.subscribe("OrderPlaced", americanQueueStyle);
 
     startMonitoring(threadedHandlers);
 
