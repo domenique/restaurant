@@ -2,6 +2,7 @@ package dddeurope;
 
 class Cook implements OrderHandler {
 
+  private static final int COOKTIME = 2000;
   private final OrderHandler next;
   private String name;
 
@@ -12,9 +13,8 @@ class Cook implements OrderHandler {
 
   public void handle(Order order) {
     System.out.println("Cook " + name + " is cooking " + order);
-    int cooktime = 2000;
-    sleep(cooktime);
-    order.setCookTime(cooktime);
+    sleep(COOKTIME);
+    order.setCookTime(COOKTIME);
     next.handle(order);
   }
 

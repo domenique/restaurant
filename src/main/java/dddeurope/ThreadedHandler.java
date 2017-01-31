@@ -7,11 +7,13 @@ class ThreadedHandler implements OrderHandler, Startable {
 
   private Queue<Order> queue;
   private OrderHandler orderHandler;
+  private String name;
 
 
-  public ThreadedHandler(OrderHandler orderHandler) {
+  public ThreadedHandler(OrderHandler orderHandler, String name) {
     this.orderHandler = orderHandler;
     this.queue = new LinkedBlockingQueue<>();
+    this.name = name;
   }
 
   @Override
@@ -36,4 +38,11 @@ class ThreadedHandler implements OrderHandler, Startable {
     }).start();
   }
 
+  public String getName() {
+    return name;
+  }
+
+  public int getQueueSize() {
+    return queue.size();
+  }
 }
