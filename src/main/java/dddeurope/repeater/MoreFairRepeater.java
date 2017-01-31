@@ -1,4 +1,8 @@
-package dddeurope;
+package dddeurope.repeater;
+
+import dddeurope.Handler;
+import dddeurope.ThreadedHandler;
+import dddeurope.message.MsgBase;
 
 import java.util.List;
 import java.util.Queue;
@@ -8,9 +12,8 @@ class MoreFairRepeater<T extends MsgBase> implements Handler<T> {
 
   private Queue<ThreadedHandler> handlers;
 
-  public MoreFairRepeater(List<ThreadedHandler> handlers) {
-    this.handlers = new LinkedBlockingDeque<>();
-    this.handlers.addAll(handlers);
+  MoreFairRepeater(List<ThreadedHandler> handlers) {
+    this.handlers = new LinkedBlockingDeque<>(handlers);
   }
 
   @Override

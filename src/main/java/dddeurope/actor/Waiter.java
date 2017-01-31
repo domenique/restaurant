@@ -1,16 +1,20 @@
-package dddeurope;
+package dddeurope.actor;
+
+import dddeurope.Order;
+import dddeurope.message.OrderPlaced;
+import dddeurope.Publisher;
 
 import java.util.UUID;
 
-class Waiter {
+public class Waiter {
 
   private Publisher publisher;
 
-  Waiter(Publisher publisher) {
+  public Waiter(Publisher publisher) {
     this.publisher = publisher;
   }
 
-  UUID placeOrder(Order order) {
+  public UUID placeOrder(Order order) {
     System.out.println("Taking order");
     publisher.publish(new OrderPlaced(order));
 

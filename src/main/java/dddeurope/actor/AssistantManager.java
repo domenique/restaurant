@@ -1,4 +1,9 @@
-package dddeurope;
+package dddeurope.actor;
+
+import dddeurope.Handler;
+import dddeurope.message.OrderCooked;
+import dddeurope.message.OrderPriced;
+import dddeurope.Publisher;
 
 class AssistantManager implements Handler<OrderCooked> {
 
@@ -8,6 +13,7 @@ class AssistantManager implements Handler<OrderCooked> {
     this.publisher = publisher;
   }
 
+  @Override
   public void handle(OrderCooked orderCooked) {
     System.out.println("Calculating prices");
     sleep();

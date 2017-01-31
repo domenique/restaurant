@@ -1,9 +1,11 @@
 package dddeurope;
 
+import dddeurope.message.MsgBase;
+
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-class ThreadedHandler<T extends MsgBase> implements Handler<T>, Startable {
+public class ThreadedHandler<T extends MsgBase> implements Handler<T> {
 
   private Queue<T> queue;
   private Handler<T> handler;
@@ -21,8 +23,7 @@ class ThreadedHandler<T extends MsgBase> implements Handler<T>, Startable {
     queue.add(msg);
   }
 
-  @Override
-  public void start() {
+  void start() {
     new Thread(() -> {
       while (true) {
         if (!queue.isEmpty()) {

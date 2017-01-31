@@ -1,4 +1,7 @@
-package dddeurope;
+package dddeurope.repeater;
+
+import dddeurope.Handler;
+import dddeurope.message.MsgBase;
 
 import java.util.List;
 import java.util.Queue;
@@ -8,12 +11,11 @@ class RoundRobinRepeater<T extends MsgBase> implements Handler<T> {
 
   private Queue<Handler<T>> orders;
 
-  public RoundRobinRepeater(List<Handler<T>> handlers) {
+  RoundRobinRepeater(List<Handler<T>> handlers) {
     this.orders = new LinkedBlockingDeque<>();
     this.orders.addAll(handlers);
 
   }
-
 
   @Override
   public void handle(T msg) {

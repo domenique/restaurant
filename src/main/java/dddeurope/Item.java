@@ -1,6 +1,6 @@
 package dddeurope;
 
-class Item {
+public class Item {
 
   private int quantity;
   private int price;
@@ -13,7 +13,7 @@ class Item {
     this.name = name;
   }
 
-  int calculateTotalPrice() {
+  public int calculateTotalPrice() {
     return quantity * price;
   }
 

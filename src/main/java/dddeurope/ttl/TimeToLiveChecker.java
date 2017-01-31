@@ -1,4 +1,7 @@
-package dddeurope;
+package dddeurope.ttl;
+
+import dddeurope.Handler;
+import dddeurope.message.OrderPlaced;
 
 class TimeToLiveChecker implements Handler<OrderPlaced> {
 
@@ -8,6 +11,7 @@ class TimeToLiveChecker implements Handler<OrderPlaced> {
 
     this.next = next;
   }
+
   @Override
   public void handle(OrderPlaced msg) {
     long timeInFlight = System.currentTimeMillis() - msg.getOrder().getCreationTime();

@@ -1,9 +1,12 @@
 package dddeurope;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import dddeurope.actor.ActorFactory;
+import dddeurope.actor.Waiter;
+import dddeurope.message.OrderCooked;
+import dddeurope.message.OrderPlaced;
+import dddeurope.message.OrderPriced;
+import dddeurope.monitoring.MonitoringDaemon;
+import dddeurope.repeater.RepeaterFactory;
 
 import static java.util.Arrays.asList;
 
@@ -11,65 +14,52 @@ class Restaurant {
 
   public static void main(String[] args) {
     // create
-    List<ThreadedHandler> threadedHandlers = new ArrayList<>();
-    Cashier cashier = new Cashier();
-
+    ActorFactory actorFactory = new ActorFactory();
+    RepeaterFactory repeaterFactory = new RepeaterFactory();
+    MonitoringDaemon monitoringDaemon = new MonitoringDaemon();
     TopicBasedPublishSubscribe topicBasedPublishSubscribe = new TopicBasedPublishSubscribe();
 
-    ThreadedHandler<OrderCooked> assistantManager = new ThreadedHandler<>(new AssistantManager(topicBasedPublishSubscribe), "Threaded John The Manager");
-    ThreadedHandler<OrderPlaced> gordon = new ThreadedHandler<>(new TimeToLiveChecker(new Cook(topicBasedPublishSubscribe, "Gordon Ramsy", 1000)), "Threaded Gordon");
-    ThreadedHandler<OrderPlaced> jamie = new ThreadedHandler<>(new TimeToLiveChecker(new Cook(topicBasedPublishSubscribe, "Jamie Oliver", 1303)), "Threaded Jamie");
-    ThreadedHandler<OrderPlaced> piet = new ThreadedHandler<>(new TimeToLiveChecker(new Cook(topicBasedPublishSubscribe, "Piet Huysentruyt", 2500)), "Threaded Piet");
+    Handler<OrderPriced> cashier = actorFactory.createCashier();
 
-    threadedHandlers.add(assistantManager);
-    threadedHandlers.add(gordon);
-    threadedHandlers.add(jamie);
-    threadedHandlers.add(piet);
+    ThreadedHandler<OrderCooked> johnTheManager = actorFactory.createAssistantManager(topicBasedPublishSubscribe, "John The Manager");
+    ThreadedHandler<OrderPlaced> gordon = actorFactory.createCook(topicBasedPublishSubscribe, "Gordon Ramsy", 1000);
+    ThreadedHandler<OrderPlaced> jamie = actorFactory.createCook(topicBasedPublishSubscribe, "Jamie Oliver", 1303);
+    ThreadedHandler<OrderPlaced> piet = actorFactory.createCook(topicBasedPublishSubscribe, "Piet Huysentruyt", 2500);
 
+    monitoringDaemon.monitor(johnTheManager);
+    monitoringDaemon.monitor(gordon);
+    monitoringDaemon.monitor(jamie);
+    monitoringDaemon.monitor(piet);
 
-    ThreadedHandler<OrderPlaced> kitchen = new ThreadedHandler<>(new MoreFairRepeater<>(asList(gordon, jamie, piet)), "Threaded More Fair Repeater for cooks");
-    threadedHandlers.add(kitchen);
+    ThreadedHandler<OrderPlaced> kitchen = repeaterFactory
+        .createThreadedMoreFairRepeater(asList(gordon, jamie, piet), "Kitchen repeater");
+    monitoringDaemon.monitor(kitchen);
 
-    Waiter waiter = new Waiter(topicBasedPublishSubscribe);
+    Waiter waiter = actorFactory.createWaiter(topicBasedPublishSubscribe);
 
     //subscribe
     topicBasedPublishSubscribe.subscribe(cashier, OrderPriced.class);
-    topicBasedPublishSubscribe.subscribe(assistantManager, OrderCooked.class);
+    topicBasedPublishSubscribe.subscribe(johnTheManager, OrderCooked.class);
     topicBasedPublishSubscribe.subscribe(kitchen, OrderPlaced.class);
 
-
     //start
-    startMonitoring(threadedHandlers);
+    monitoringDaemon.start();
 
-    for (ThreadedHandler handler : threadedHandlers) {
-      handler.start();
-    }
+    johnTheManager.start();
+    gordon.start();
+    jamie.start();
+    piet.start();
+    kitchen.start();
 
     // stable - feed in orders
-    int totalTime = order(waiter, 100);
-    System.out.println("Total cooktime : " + totalTime);
+    order(waiter, 100);
   }
 
-  private static int order(Waiter waiter, int numberOfOrders) {
-    int totalTime = 0;
+  private static void order(Waiter waiter, int numberOfOrders) {
     for (int i = 0; i < numberOfOrders; i++) {
       Order order = new Order();
-      order.addItem(new Item(4, 50, "Razorblade Icecream"));
+      order.addItem(new Item(4, 50, "Razor-blade ice cream"));
       waiter.placeOrder(order);
-      totalTime += order.getCookTime();
     }
-    return totalTime;
   }
-
-  private static void startMonitoring(final List<ThreadedHandler> handlersToMonitor) {
-    new Timer().schedule(new TimerTask() {
-      @Override
-      public void run() {
-        for (ThreadedHandler handler : handlersToMonitor) {
-          System.out.println("Queue size of handler " + handler.getName() + " : " + handler.getQueueSize());
-        }
-      }
-    }, 0, 1000);
-  }
-
 }

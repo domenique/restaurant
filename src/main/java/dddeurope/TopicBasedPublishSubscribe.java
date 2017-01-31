@@ -1,5 +1,8 @@
 package dddeurope;
 
+
+import dddeurope.message.MsgBase;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -7,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-class TopicBasedPublishSubscribe implements Publisher {
+public class TopicBasedPublishSubscribe implements Publisher {
 
   private Map<String, List<Handler<MsgBase>>> topics = new HashMap<>();
 

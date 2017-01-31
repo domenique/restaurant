@@ -1,7 +1,9 @@
 package dddeurope;
 
-interface Publisher {
+import dddeurope.message.MsgBase;
+
+public interface Publisher {
 
 
-  <T extends MsgBase>  void publish(T msg);
+  <T extends MsgBase> void publish(T msg);
 }

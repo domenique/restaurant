@@ -1,10 +1,12 @@
 package dddeurope;
 
+import dddeurope.ttl.SubjectToTimeToLive;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-class Order implements SubjectToTimeToLive {
+public class Order implements SubjectToTimeToLive {
 
   private final long creationTime;
   private UUID uuid;
@@ -16,12 +18,12 @@ class Order implements SubjectToTimeToLive {
   private int cookTime;
   private String ingredients;
 
-  Order() {
+  public Order() {
     uuid = UUID.randomUUID();
     creationTime = System.currentTimeMillis();
   }
 
-  UUID getUuid() {
+  public UUID getUuid() {
     return uuid;
   }
 

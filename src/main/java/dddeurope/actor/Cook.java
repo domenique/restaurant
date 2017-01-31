@@ -1,4 +1,9 @@
-package dddeurope;
+package dddeurope.actor;
+
+import dddeurope.Handler;
+import dddeurope.message.OrderCooked;
+import dddeurope.message.OrderPlaced;
+import dddeurope.Publisher;
 
 class Cook implements Handler<OrderPlaced> {
 
@@ -12,6 +17,7 @@ class Cook implements Handler<OrderPlaced> {
     this.cookTime = cookTime;
   }
 
+  @Override
   public void handle(OrderPlaced orderPlaced) {
     System.out.println("Cook " + name + " is cooking " + orderPlaced.getOrder());
     sleep(cookTime);
