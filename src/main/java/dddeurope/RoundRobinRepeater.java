@@ -4,22 +4,22 @@ import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingDeque;
 
-class RoundRobinRepeater implements OrderHandler {
+class RoundRobinRepeater<T extends MsgBase> implements Handler<T> {
 
-  private Queue<OrderHandler> orders;
+  private Queue<Handler<T>> orders;
 
-  public RoundRobinRepeater(List<OrderHandler> orderHandlers) {
+  public RoundRobinRepeater(List<Handler<T>> handlers) {
     this.orders = new LinkedBlockingDeque<>();
-    this.orders.addAll(orderHandlers);
+    this.orders.addAll(handlers);
 
   }
 
 
   @Override
-  public void handle(Order order) {
-    OrderHandler handler = orders.poll();
+  public void handle(T msg) {
+    Handler<T> handler = orders.poll();
     try {
-      handler.handle(order);
+      handler.handle(msg);
     } finally {
       orders.add(handler);
     }

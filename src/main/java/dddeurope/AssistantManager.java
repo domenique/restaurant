@@ -1,18 +1,19 @@
 package dddeurope;
 
-class AssistantManager implements OrderHandler {
+class AssistantManager implements Handler<OrderCooked> {
 
   private final Publisher publisher;
 
-  public AssistantManager(Publisher publisher) {
+  AssistantManager(Publisher publisher) {
     this.publisher = publisher;
   }
 
-  public void handle(Order order) {
+  public void handle(OrderCooked orderCooked) {
     System.out.println("Calculating prices");
     sleep();
-    order.getItems().forEach(item -> order.setSubtotal(order.getSubtotal() + item.calculateTotalPrice()));
-    publisher.publish("BillCalculated", order);
+    orderCooked.getOrder().getItems()
+        .forEach(item -> orderCooked.getOrder().setSubtotal(orderCooked.getOrder().getSubtotal() + item.calculateTotalPrice()));
+    publisher.publish(new OrderPriced(orderCooked.getOrder()));
   }
 
   private void sleep() {

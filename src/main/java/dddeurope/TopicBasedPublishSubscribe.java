@@ -9,24 +9,33 @@ import java.util.Optional;
 
 class TopicBasedPublishSubscribe implements Publisher {
 
-  private Map<String, List<OrderHandler>> topics = new HashMap<>();
+  private Map<String, List<Handler<MsgBase>>> topics = new HashMap<>();
 
-  public void subscribe(String topic, OrderHandler orderHandler) {
-    List<OrderHandler> orderHandlers = topics.get(topic);
-    if (orderHandlers == null) {
-      orderHandlers = new ArrayList<>();
-    } else {
-      orderHandlers = new ArrayList<>(orderHandlers);
-    }
-
-    orderHandlers.add(orderHandler);
-    topics.put(topic, orderHandlers);
+  public <T extends MsgBase> void subscribe(Handler<T> handler, Class<T> clazz) {
+    subscribe(clazz.getName(), handler);
   }
 
   @Override
-  public void publish(String topic, Order order) {
+  public <T extends MsgBase> void publish(T msg) {
+    publish(msg.getClass().getName(), msg);
+  }
+
+
+  private void subscribe(String topic, Handler handler) {
+    List<Handler<MsgBase>> handlers = topics.get(topic);
+    if (handlers == null) {
+      handlers = new ArrayList<>();
+    } else {
+      handlers = new ArrayList<>(handlers);
+    }
+
+    handlers.add(handler);
+    topics.put(topic, handlers);
+  }
+
+  private <T extends MsgBase> void publish(String topic, T msg) {
     Optional.ofNullable(topics.get(topic))
         .orElse(Collections.emptyList())
-        .forEach(o -> o.handle(order));
+        .forEach(o -> o.handle(msg));
   }
 }

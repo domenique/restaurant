@@ -16,10 +16,10 @@ class Restaurant {
 
     TopicBasedPublishSubscribe topicBasedPublishSubscribe = new TopicBasedPublishSubscribe();
 
-    ThreadedHandler assistantManager = new ThreadedHandler(new AssistantManager(topicBasedPublishSubscribe), "Threaded John The Manager");
-    ThreadedHandler gordon = new ThreadedHandler(new TimeToLiveChecker(new Cook(topicBasedPublishSubscribe, "Gordon Ramsy", 1000)), "Threaded Gordon");
-    ThreadedHandler jamie = new ThreadedHandler(new TimeToLiveChecker(new Cook(topicBasedPublishSubscribe, "Jamie Oliver", 1303)), "Threaded Jamie");
-    ThreadedHandler piet = new ThreadedHandler(new TimeToLiveChecker(new Cook(topicBasedPublishSubscribe, "Piet Huysentruyt", 2500)), "Threaded Piet");
+    ThreadedHandler<OrderCooked> assistantManager = new ThreadedHandler<>(new AssistantManager(topicBasedPublishSubscribe), "Threaded John The Manager");
+    ThreadedHandler<OrderPlaced> gordon = new ThreadedHandler<>(new TimeToLiveChecker(new Cook(topicBasedPublishSubscribe, "Gordon Ramsy", 1000)), "Threaded Gordon");
+    ThreadedHandler<OrderPlaced> jamie = new ThreadedHandler<>(new TimeToLiveChecker(new Cook(topicBasedPublishSubscribe, "Jamie Oliver", 1303)), "Threaded Jamie");
+    ThreadedHandler<OrderPlaced> piet = new ThreadedHandler<>(new TimeToLiveChecker(new Cook(topicBasedPublishSubscribe, "Piet Huysentruyt", 2500)), "Threaded Piet");
 
     threadedHandlers.add(assistantManager);
     threadedHandlers.add(gordon);
@@ -27,15 +27,15 @@ class Restaurant {
     threadedHandlers.add(piet);
 
 
-    ThreadedHandler kitchen = new ThreadedHandler(new MoreFairRepeater(asList(gordon, jamie, piet)), "Threaded More Fair Repeater for cooks");
+    ThreadedHandler<OrderPlaced> kitchen = new ThreadedHandler<>(new MoreFairRepeater<>(asList(gordon, jamie, piet)), "Threaded More Fair Repeater for cooks");
     threadedHandlers.add(kitchen);
 
     Waiter waiter = new Waiter(topicBasedPublishSubscribe);
 
     //subscribe
-    topicBasedPublishSubscribe.subscribe("BillCalculated", cashier);
-    topicBasedPublishSubscribe.subscribe("FoodCooked", assistantManager);
-    topicBasedPublishSubscribe.subscribe("OrderPlaced", kitchen);
+    topicBasedPublishSubscribe.subscribe(cashier, OrderPriced.class);
+    topicBasedPublishSubscribe.subscribe(assistantManager, OrderCooked.class);
+    topicBasedPublishSubscribe.subscribe(kitchen, OrderPlaced.class);
 
 
     //start

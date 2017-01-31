@@ -6,13 +6,13 @@ class Waiter {
 
   private Publisher publisher;
 
-  public Waiter(Publisher publisher) {
+  Waiter(Publisher publisher) {
     this.publisher = publisher;
   }
 
   UUID placeOrder(Order order) {
     System.out.println("Taking order");
-    publisher.publish("OrderPlaced", order);
+    publisher.publish(new OrderPlaced(order));
 
     return order.getUuid();
   }

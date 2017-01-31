@@ -2,5 +2,6 @@ package dddeurope;
 
 interface Publisher {
 
-  void publish(String topic, Order order);
+
+  <T extends MsgBase>  void publish(T msg);
 }

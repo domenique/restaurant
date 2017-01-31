@@ -1,20 +1,20 @@
 package dddeurope;
 
-class TimeToLiveChecker implements OrderHandler {
+class TimeToLiveChecker implements Handler<OrderPlaced> {
 
-  private OrderHandler next;
+  private Handler<OrderPlaced> next;
 
-  TimeToLiveChecker(OrderHandler next) {
+  TimeToLiveChecker(Handler<OrderPlaced> next) {
 
     this.next = next;
   }
   @Override
-  public void handle(Order order) {
-    long timeInFlight = System.currentTimeMillis() - order.getCreationTime();
+  public void handle(OrderPlaced msg) {
+    long timeInFlight = System.currentTimeMillis() - msg.getOrder().getCreationTime();
     if (timeInFlight > 5000) {
       System.out.println("DROPPING ORDER " + timeInFlight);
       return;
     }
-    next.handle(order);
+    next.handle(msg);
   }
 }

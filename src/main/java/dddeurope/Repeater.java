@@ -2,18 +2,18 @@ package dddeurope;
 
 import java.util.List;
 
-class Repeater implements OrderHandler {
+class Repeater<T extends MsgBase> implements Handler<T> {
 
-  private List<OrderHandler> orderHandlers;
+  private List<Handler<T>> handlers;
 
-  Repeater(List<OrderHandler> orderHandlers) {
-    this.orderHandlers = orderHandlers;
+  Repeater(List<Handler<T>> handlers) {
+    this.handlers = handlers;
   }
 
   @Override
-  public void handle(Order order) {
-    for (OrderHandler orderHandler : orderHandlers) {
-      orderHandler.handle(order);
+  public void handle(T msg) {
+    for (Handler<T> handler : handlers) {
+      handler.handle(msg);
     }
   }
 }

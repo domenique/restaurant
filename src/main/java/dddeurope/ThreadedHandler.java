@@ -3,22 +3,22 @@ package dddeurope;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-class ThreadedHandler implements OrderHandler, Startable {
+class ThreadedHandler<T extends MsgBase> implements Handler<T>, Startable {
 
-  private Queue<Order> queue;
-  private OrderHandler orderHandler;
+  private Queue<T> queue;
+  private Handler<T> handler;
   private String name;
 
 
-  public ThreadedHandler(OrderHandler orderHandler, String name) {
-    this.orderHandler = orderHandler;
+  public ThreadedHandler(Handler<T> handler, String name) {
+    this.handler = handler;
     this.queue = new LinkedBlockingQueue<>();
     this.name = name;
   }
 
   @Override
-  public void handle(Order order) {
-    queue.add(order);
+  public void handle(T msg) {
+    queue.add(msg);
   }
 
   @Override
@@ -26,7 +26,7 @@ class ThreadedHandler implements OrderHandler, Startable {
     new Thread(() -> {
       while (true) {
         if (!queue.isEmpty()) {
-          orderHandler.handle(queue.poll());
+          handler.handle(queue.poll());
         } else {
           try {
             Thread.sleep(1);

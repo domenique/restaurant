@@ -1,8 +1,8 @@
 package dddeurope;
 
-class Cashier implements OrderHandler {
+class Cashier implements Handler<OrderPriced> {
 
-  public void handle(Order order) {
-    System.out.println(order);
+  public void handle(OrderPriced orderPriced) {
+    System.out.println(orderPriced.getOrder());
   }
 }

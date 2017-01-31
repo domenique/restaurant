@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingDeque;
 
-class MoreFairRepeater implements OrderHandler {
+class MoreFairRepeater<T extends MsgBase> implements Handler<T> {
 
   private Queue<ThreadedHandler> handlers;
 
@@ -14,12 +14,12 @@ class MoreFairRepeater implements OrderHandler {
   }
 
   @Override
-  public void handle(Order order) {
+  public void handle(T msg) {
     while (true) {
       ThreadedHandler handler = handlers.poll();
       try {
         if (handler.getQueueSize() < 5) {
-          handler.handle(order);
+          handler.handle(msg);
           return;
         }
       } finally {
