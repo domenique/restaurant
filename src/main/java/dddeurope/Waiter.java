@@ -4,9 +4,9 @@ import java.util.UUID;
 
 class Waiter {
 
-  private final HandleOrder orderHandler;
+  private final OrderHandler orderHandler;
 
-  Waiter(HandleOrder orderHandler) {
+  Waiter(OrderHandler orderHandler) {
     this.orderHandler = orderHandler;
   }
 

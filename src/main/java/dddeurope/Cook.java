@@ -1,11 +1,11 @@
 package dddeurope;
 
-class Cook implements HandleOrder {
+class Cook implements OrderHandler {
 
-  private final HandleOrder next;
+  private final OrderHandler next;
   private String name;
 
-  public Cook(HandleOrder next, String name) {
+  public Cook(OrderHandler next, String name) {
     this.next = next;
     this.name = name;
   }

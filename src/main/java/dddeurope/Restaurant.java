@@ -5,15 +5,22 @@ import java.util.Arrays;
 class Restaurant {
 
   public static void main(String[] args) {
-    OrderPrinter orderPrinter = new OrderPrinter();
+    OrderHandlerPrinter orderPrinter = new OrderHandlerPrinter();
 
-    AssistantManager assistantManager = new AssistantManager(orderPrinter);
+    OrderHandler assistantManager = new ThreadedHandler(new AssistantManager(orderPrinter));
 
-    Cook gordon = new Cook(assistantManager, "Gordon Ramsy");
-    Cook jamie = new Cook(assistantManager, "Jamie Oliver");
-    Cook piet = new Cook(assistantManager, "Piet Huysentruyt");
+    OrderHandler gordon = new ThreadedHandler(new Cook(assistantManager, "Gordon Ramsy"));
+    OrderHandler jamie = new ThreadedHandler(new Cook(assistantManager, "Jamie Oliver"));
+    OrderHandler piet = new ThreadedHandler(new Cook(assistantManager, "Piet Huysentruyt"));
 
-    Waiter waiter = new Waiter(new RoundRobinRepeater(Arrays.asList(gordon, jamie, piet)));
+    OrderHandler orderHandler = new RoundRobinRepeater(Arrays.asList(gordon, jamie, piet));
+
+    Waiter waiter = new Waiter(orderHandler);
+
+    start(assistantManager);
+    start(gordon);
+    start(jamie);
+    start(piet);
 
     int totalTime = 0;
     for (int i = 0; i < 10; i++) {
@@ -25,5 +32,9 @@ class Restaurant {
     }
 
     System.out.println("Total cooktime : " + totalTime);
+  }
+
+  private static void start(OrderHandler orderHandler) {
+    ((Startable) orderHandler).start();
   }
 }

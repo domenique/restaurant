@@ -1,10 +1,10 @@
 package dddeurope;
 
-class AssistantManager implements HandleOrder {
+class AssistantManager implements OrderHandler {
 
-  private final HandleOrder next;
+  private final OrderHandler next;
 
-  public AssistantManager(HandleOrder next) {
+  public AssistantManager(OrderHandler next) {
     this.next = next;
   }
 

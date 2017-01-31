@@ -1,6 +1,6 @@
 package dddeurope;
 
-interface HandleOrder {
+interface OrderHandler {
 
   void handle(Order order);
 }

@@ -2,17 +2,17 @@ package dddeurope;
 
 import java.util.List;
 
-class Repeater implements HandleOrder {
+class Repeater implements OrderHandler {
 
-  private List<HandleOrder> orderHandlers;
+  private List<OrderHandler> orderHandlers;
 
-  Repeater(List<HandleOrder> orderHandlers) {
+  Repeater(List<OrderHandler> orderHandlers) {
     this.orderHandlers = orderHandlers;
   }
 
   @Override
   public void handle(Order order) {
-    for (HandleOrder orderHandler : orderHandlers) {
+    for (OrderHandler orderHandler : orderHandlers) {
       orderHandler.handle(order);
     }
   }
