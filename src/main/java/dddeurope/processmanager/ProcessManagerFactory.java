@@ -7,11 +7,11 @@ import dddeurope.message.MsgBase;
 
 class ProcessManagerFactory {
 
-  public <T extends MsgBase> Handler<T> create(Order order, Publisher publisher) {
-    return new ProcessManager(order, publisher);
+  public <T extends MsgBase> ProcessManager<T> create(Publisher publisher) {
+    return new NormalProcessManager(publisher);
   }
 
-  public <T extends MsgBase> Handler<T> createPayFirst(Order order, Publisher publisher) {
+  public <T extends MsgBase> ProcessManager<T> createPayFirst(Order order, Publisher publisher) {
     return new PayFirstProcessManager(order, publisher);
   }
 }

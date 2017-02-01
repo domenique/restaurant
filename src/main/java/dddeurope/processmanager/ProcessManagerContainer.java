@@ -1,5 +1,6 @@
 package dddeurope.processmanager;
 
+import dddeurope.DevNullPublisher;
 import dddeurope.Handler;
 import dddeurope.ThreadedHandler;
 import dddeurope.TopicBasedPublishSubscribe;
@@ -12,7 +13,6 @@ import java.util.UUID;
 public class ProcessManagerContainer implements Handler<OrderPlaced> {
 
   private ProcessManagerFactory factory = new ProcessManagerFactory();
-  private HashMap<UUID, Handler> processManagers = new HashMap<>();
   private TopicBasedPublishSubscribe topicBasedPublishSubscribe;
   int count = 0;
 
@@ -25,11 +25,7 @@ public class ProcessManagerContainer implements Handler<OrderPlaced> {
   @Override
   public void handle(OrderPlaced msg) {
     topicBasedPublishSubscribe.subscribe(msg.getCorrelationId().toString(), threadedCorrelationIdHandler);
-    if (count++ % 2 == 0) {
-      processManagers.put(msg.getCorrelationId(), factory.create(msg.getOrder(), topicBasedPublishSubscribe));
-    } else {
-      processManagers.put(msg.getCorrelationId(), factory.createPayFirst(msg.getOrder(), topicBasedPublishSubscribe));
-    }
+
   }
 
   public void start() {
@@ -40,7 +36,10 @@ public class ProcessManagerContainer implements Handler<OrderPlaced> {
 
     @Override
     public void handle(T msg) {
-      processManagers.get(msg.getCorrelationId()).handle(msg);
+      ProcessManager processManager = factory.create(new DevNullPublisher());
+      topicBasedPublishSubscribe.getHistory(msg.getCorrelationId().toString()).stream().forEach(historyMsg -> processManager.handle(historyMsg));
+      processManager.setPublisher(topicBasedPublishSubscribe);
+      processManager.handle(msg);
     }
   }
 }

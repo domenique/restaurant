@@ -2,8 +2,6 @@ package dddeurope.message;
 
 import dddeurope.Order;
 
-import java.util.UUID;
-
 public class OrderCooked extends MsgBase {
 
   private Order order;
