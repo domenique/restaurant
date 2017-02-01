@@ -34,10 +34,8 @@ public class ProcessManager<T extends MsgBase> implements Handler<T> {
       tryToCook(msg);
     }
     if (msg instanceof OrderCooked) {
-      if (!isCooked) {
-        this.isCooked = true;
-        topicBasedPublishSubscribe.publish(new PriceOrder(msg, order));
-      }
+      this.isCooked = true;
+      topicBasedPublishSubscribe.publish(new PriceOrder(msg, order));
     }
     if (msg instanceof OrderPriced) {
       topicBasedPublishSubscribe.publish(new TakePayment(msg, order));

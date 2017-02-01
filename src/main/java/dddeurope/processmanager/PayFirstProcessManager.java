@@ -6,6 +6,7 @@ import dddeurope.Publisher;
 import dddeurope.message.CookFood;
 import dddeurope.message.CookingTimedOut;
 import dddeurope.message.MsgBase;
+import dddeurope.message.OrderCooked;
 import dddeurope.message.OrderPaid;
 import dddeurope.message.OrderPlaced;
 import dddeurope.message.OrderPriced;
@@ -20,6 +21,7 @@ public class PayFirstProcessManager<T extends MsgBase> implements Handler<T> {
   private Order order;
   private Publisher topicBasedPublishSubscribe;
   private static final int COOKING_TIMEOUT_SEC = 2;
+  private boolean isCooked;
 
   public PayFirstProcessManager(Order order, Publisher topicBasedPublishSubscribe) {
     this.order = order;
@@ -36,8 +38,20 @@ public class PayFirstProcessManager<T extends MsgBase> implements Handler<T> {
       topicBasedPublishSubscribe.publish(new TakePayment(msg, order));
     }
     if (msg instanceof OrderPaid) {
-      topicBasedPublishSubscribe.publish(new CookFood(msg, order));
-      topicBasedPublishSubscribe.publish(new PublishAt(msg, new CookingTimedOut(msg, order), LocalDateTime.now().plusSeconds(COOKING_TIMEOUT_SEC)));
+      tryToCook(msg);
     }
+    if (msg instanceof OrderCooked) {
+      this.isCooked = true;
+    }
+    if (msg instanceof CookingTimedOut) {
+      if (!isCooked) {
+        tryToCook(msg);
+      }
+    }
+  }
+
+  private void tryToCook(T msg) {
+    topicBasedPublishSubscribe.publish(new CookFood(msg, order));
+    topicBasedPublishSubscribe.publish(new PublishAt(msg, new CookingTimedOut(msg, order), LocalDateTime.now().plusSeconds(COOKING_TIMEOUT_SEC)));
   }
 }

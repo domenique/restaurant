@@ -21,14 +21,17 @@ public class FlakyNetwork implements Handler<CookFood> {
       // duplicate
       next.handle(msg);
       next.handle(msg);
-    } else {
+    } else if (randomNumber == 1){
       // drop
+    } else {
+      // normal
+      next.handle(msg);
     }
   }
 
   private int generateRandomNumber() {
     try {
-      return SecureRandom.getInstanceStrong().nextInt(2);
+      return SecureRandom.getInstanceStrong().nextInt(3);
     } catch (NoSuchAlgorithmException e) {
       e.printStackTrace();
     }
