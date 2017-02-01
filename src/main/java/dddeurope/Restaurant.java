@@ -4,6 +4,8 @@ import dddeurope.actor.ActorFactory;
 import dddeurope.actor.AlarmClock;
 import dddeurope.actor.Waiter;
 import dddeurope.message.CookFood;
+import dddeurope.message.DoubleCooked;
+import dddeurope.message.MsgBase;
 import dddeurope.message.OrderPlaced;
 import dddeurope.message.PriceOrder;
 import dddeurope.message.PublishAt;
@@ -49,6 +51,7 @@ class Restaurant {
     topicBasedPublishSubscribe.subscribe(kitchen, CookFood.class);
     topicBasedPublishSubscribe.subscribe(processManagerContainer, OrderPlaced.class);
     topicBasedPublishSubscribe.subscribe(alarmClock, PublishAt.class);
+    topicBasedPublishSubscribe.subscribe(msg -> System.out.println("DOUBLE COOKED " + msg), DoubleCooked.class);
 
     //start
     monitoringDaemon.start();

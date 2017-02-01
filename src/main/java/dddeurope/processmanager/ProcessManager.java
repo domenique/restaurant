@@ -5,6 +5,7 @@ import dddeurope.Order;
 import dddeurope.Publisher;
 import dddeurope.message.CookFood;
 import dddeurope.message.CookingTimedOut;
+import dddeurope.message.DoubleCooked;
 import dddeurope.message.MsgBase;
 import dddeurope.message.OrderCooked;
 import dddeurope.message.OrderPlaced;
@@ -34,8 +35,12 @@ public class ProcessManager<T extends MsgBase> implements Handler<T> {
       tryToCook(msg);
     }
     if (msg instanceof OrderCooked) {
+      if (this.isCooked) {
+        topicBasedPublishSubscribe.publish(new DoubleCooked(msg, order));
+      }
       this.isCooked = true;
       topicBasedPublishSubscribe.publish(new PriceOrder(msg, order));
+
     }
     if (msg instanceof OrderPriced) {
       topicBasedPublishSubscribe.publish(new TakePayment(msg, order));
