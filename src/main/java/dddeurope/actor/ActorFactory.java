@@ -7,6 +7,7 @@ import dddeurope.message.CookFood;
 import dddeurope.message.PriceOrder;
 import dddeurope.message.PublishAt;
 import dddeurope.message.TakePayment;
+import dddeurope.problems.FlakyNetwork;
 import dddeurope.ttl.TimeToLiveFactory;
 
 public class ActorFactory {
@@ -22,7 +23,7 @@ public class ActorFactory {
   }
 
   public ThreadedHandler<CookFood> createCook(Publisher publisher, String name, int cookTime) {
-    return new ThreadedHandler<>(timeToLiveFactory.create(new Cook(publisher, name, cookTime)), "Threaded " + name);
+    return new ThreadedHandler<>(new FlakyNetwork(new Cook(publisher, name, cookTime)), "Threaded " + name);
   }
 
   public ThreadedHandler<PriceOrder> createAssistantManager(Publisher publisher, String name) {
