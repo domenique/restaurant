@@ -1,9 +1,9 @@
 package dddeurope.actor;
 
 import dddeurope.Handler;
+import dddeurope.Publisher;
 import dddeurope.message.OrderCooked;
 import dddeurope.message.OrderPriced;
-import dddeurope.Publisher;
 
 class AssistantManager implements Handler<OrderCooked> {
 
@@ -19,7 +19,7 @@ class AssistantManager implements Handler<OrderCooked> {
     sleep();
     orderCooked.getOrder().getItems()
         .forEach(item -> orderCooked.getOrder().setSubtotal(orderCooked.getOrder().getSubtotal() + item.calculateTotalPrice()));
-    publisher.publish(new OrderPriced(orderCooked.getOrder()));
+    publisher.publish(new OrderPriced(orderCooked.getOrder(), orderCooked));
   }
 
   private void sleep() {

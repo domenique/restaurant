@@ -6,8 +6,8 @@ public class OrderPriced extends MsgBase {
 
   private Order order;
 
-  public OrderPriced(Order order) {
-
+  public OrderPriced(Order order, MsgBase cause) {
+    super(cause);
     this.order = order;
   }
 

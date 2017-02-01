@@ -1,8 +1,8 @@
 package dddeurope.actor;
 
 import dddeurope.Order;
-import dddeurope.message.OrderPlaced;
 import dddeurope.Publisher;
+import dddeurope.message.OrderPlaced;
 
 import java.util.UUID;
 
