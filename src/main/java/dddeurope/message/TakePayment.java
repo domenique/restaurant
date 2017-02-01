@@ -14,4 +14,12 @@ public class TakePayment extends MsgBase {
   public Order getOrder() {
     return order;
   }
+
+  @Override
+  public String toString() {
+    return "TakePayment {" +
+            super.toString() + "," +
+            "order=" + order +
+            '}';
+  }
 }

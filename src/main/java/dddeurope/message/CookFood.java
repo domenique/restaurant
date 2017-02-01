@@ -15,4 +15,12 @@ public class CookFood extends MsgBase {
   public Order getOrder() {
     return order;
   }
+
+  @Override
+  public String toString() {
+    return "CookFood {" +
+            super.toString() + "," +
+            "order=" + order +
+            '}';
+  }
 }
