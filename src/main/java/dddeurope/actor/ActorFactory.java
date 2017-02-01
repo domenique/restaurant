@@ -16,8 +16,8 @@ public class ActorFactory {
     return new Waiter(publisher);
   }
 
-  public Handler<TakePayment> createCashier() {
-    return new Cashier();
+  public Handler<TakePayment> createCashier(Publisher publisher) {
+    return new Cashier(publisher);
   }
 
   public ThreadedHandler<CookFood> createCook(Publisher publisher, String name, int cookTime) {

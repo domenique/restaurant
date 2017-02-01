@@ -22,7 +22,7 @@ class Restaurant {
     TopicBasedPublishSubscribe topicBasedPublishSubscribe = new TopicBasedPublishSubscribe();
     ProcessManagerContainer processManagerContainer = new ProcessManagerContainer(topicBasedPublishSubscribe);
 
-    Handler cashier = actorFactory.createCashier();
+    Handler cashier = actorFactory.createCashier(topicBasedPublishSubscribe);
 
     ThreadedHandler johnTheManager = actorFactory.createAssistantManager(topicBasedPublishSubscribe, "John The Manager");
     ThreadedHandler gordon = actorFactory.createCook(topicBasedPublishSubscribe, "Gordon Ramsy", 1000);
