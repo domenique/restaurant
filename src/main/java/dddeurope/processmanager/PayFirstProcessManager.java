@@ -4,17 +4,22 @@ import dddeurope.Handler;
 import dddeurope.Order;
 import dddeurope.Publisher;
 import dddeurope.message.CookFood;
+import dddeurope.message.CookingTimedOut;
 import dddeurope.message.MsgBase;
 import dddeurope.message.OrderPaid;
 import dddeurope.message.OrderPlaced;
 import dddeurope.message.OrderPriced;
 import dddeurope.message.PriceOrder;
+import dddeurope.message.PublishAt;
 import dddeurope.message.TakePayment;
+
+import java.time.LocalDateTime;
 
 public class PayFirstProcessManager<T extends MsgBase> implements Handler<T> {
 
   private Order order;
   private Publisher topicBasedPublishSubscribe;
+  private static final int COOKING_TIMEOUT_SEC = 2;
 
   public PayFirstProcessManager(Order order, Publisher topicBasedPublishSubscribe) {
     this.order = order;
@@ -32,6 +37,7 @@ public class PayFirstProcessManager<T extends MsgBase> implements Handler<T> {
     }
     if (msg instanceof OrderPaid) {
       topicBasedPublishSubscribe.publish(new CookFood(msg, order));
+      topicBasedPublishSubscribe.publish(new PublishAt(msg, new CookingTimedOut(msg, order), LocalDateTime.now().plusSeconds(COOKING_TIMEOUT_SEC)));
     }
   }
 }

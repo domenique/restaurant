@@ -1,10 +1,12 @@
 package dddeurope;
 
 import dddeurope.actor.ActorFactory;
+import dddeurope.actor.AlarmClock;
 import dddeurope.actor.Waiter;
 import dddeurope.message.CookFood;
 import dddeurope.message.OrderPlaced;
 import dddeurope.message.PriceOrder;
+import dddeurope.message.PublishAt;
 import dddeurope.message.TakePayment;
 import dddeurope.monitoring.MonitoringDaemon;
 import dddeurope.processmanager.ProcessManagerContainer;
@@ -39,11 +41,14 @@ class Restaurant {
 
     Waiter waiter = actorFactory.createWaiter(topicBasedPublishSubscribe);
 
+    AlarmClock alarmClock = actorFactory.createAlarmClock(topicBasedPublishSubscribe);
+
     //subscribe
     topicBasedPublishSubscribe.subscribe(cashier, TakePayment.class);
     topicBasedPublishSubscribe.subscribe(johnTheManager, PriceOrder.class);
     topicBasedPublishSubscribe.subscribe(kitchen, CookFood.class);
     topicBasedPublishSubscribe.subscribe(processManagerContainer, OrderPlaced.class);
+    topicBasedPublishSubscribe.subscribe(alarmClock, PublishAt.class);
 
     //start
     monitoringDaemon.start();
@@ -55,9 +60,10 @@ class Restaurant {
     kitchen.start();
     cashier.start();
     processManagerContainer.start();
+    alarmClock.start();
 
     // stable - feed in orders
-    order(waiter, 100, topicBasedPublishSubscribe);
+    order(waiter, 10, topicBasedPublishSubscribe);
   }
 
   private static void order(Waiter waiter, int numberOfOrders, TopicBasedPublishSubscribe topicBasedPublishSubscribe) {

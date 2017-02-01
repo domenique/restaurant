@@ -5,6 +5,7 @@ import dddeurope.Publisher;
 import dddeurope.ThreadedHandler;
 import dddeurope.message.CookFood;
 import dddeurope.message.PriceOrder;
+import dddeurope.message.PublishAt;
 import dddeurope.message.TakePayment;
 import dddeurope.ttl.TimeToLiveFactory;
 
@@ -26,5 +27,9 @@ public class ActorFactory {
 
   public ThreadedHandler<PriceOrder> createAssistantManager(Publisher publisher, String name) {
     return new ThreadedHandler<>(new AssistantManager(publisher), name);
+  }
+
+  public AlarmClock createAlarmClock(Publisher publisher) {
+    return new AlarmClock(publisher);
   }
 }
