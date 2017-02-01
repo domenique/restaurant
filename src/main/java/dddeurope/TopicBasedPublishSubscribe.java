@@ -21,10 +21,11 @@ public class TopicBasedPublishSubscribe implements Publisher {
   @Override
   public <T extends MsgBase> void publish(T msg) {
     publish(msg.getClass().getName(), msg);
+    publish(msg.getCorrelationId().toString(), msg);
   }
 
 
-  private void subscribe(String topic, Handler handler) {
+  public void subscribe(String topic, Handler handler) {
     List<Handler<MsgBase>> handlers = topics.get(topic);
     if (handlers == null) {
       handlers = new ArrayList<>();

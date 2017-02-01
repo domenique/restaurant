@@ -7,6 +7,6 @@ class Cashier implements Handler<OrderPriced> {
 
   @Override
   public void handle(OrderPriced orderPriced) {
-    System.out.println(orderPriced.getOrder());
+    //System.out.println(orderPriced.getOrder());
   }
 }

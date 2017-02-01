@@ -2,6 +2,7 @@ package dddeurope;
 
 import dddeurope.actor.ActorFactory;
 import dddeurope.actor.Waiter;
+import dddeurope.message.MsgBase;
 import dddeurope.message.OrderCooked;
 import dddeurope.message.OrderPlaced;
 import dddeurope.message.OrderPriced;
@@ -52,13 +53,16 @@ class Restaurant {
     kitchen.start();
 
     // stable - feed in orders
-    order(waiter, 100);
+    order(waiter, 100, topicBasedPublishSubscribe);
   }
 
-  private static void order(Waiter waiter, int numberOfOrders) {
+  private static void order(Waiter waiter, int numberOfOrders, TopicBasedPublishSubscribe topicBasedPublishSubscribe) {
     for (int i = 0; i < numberOfOrders; i++) {
       Order order = new Order();
       order.addItem(new Item(4, 50, "Razor-blade ice cream"));
+
+      topicBasedPublishSubscribe.subscribe(order.getUuid().toString(), new CorrelatedMsgsHandler());
+
       waiter.placeOrder(order);
     }
   }

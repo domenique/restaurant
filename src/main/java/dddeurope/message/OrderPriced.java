@@ -14,4 +14,12 @@ public class OrderPriced extends MsgBase {
   public Order getOrder() {
     return order;
   }
+
+  @Override
+  public String toString() {
+    return "OrderPriced{" +
+        super.toString() + "," +
+        "order=" + order +
+        '}';
+  }
 }

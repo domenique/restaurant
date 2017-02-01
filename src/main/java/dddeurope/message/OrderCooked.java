@@ -17,4 +17,11 @@ public class OrderCooked extends MsgBase {
     return order;
   }
 
+  @Override
+  public String toString() {
+    return "OrderCooked{" +
+        super.toString() + "," +
+        "order=" + order +
+        '}';
+  }
 }
