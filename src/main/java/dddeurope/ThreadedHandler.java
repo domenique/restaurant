@@ -23,7 +23,7 @@ public class ThreadedHandler<T extends MsgBase> implements Handler<T> {
     queue.add(msg);
   }
 
-  void start() {
+  public void start() {
     new Thread(() -> {
       while (true) {
         if (!queue.isEmpty()) {

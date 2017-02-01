@@ -3,6 +3,7 @@ package dddeurope.actor;
 import dddeurope.Order;
 import dddeurope.Publisher;
 import dddeurope.message.OrderPlaced;
+import dddeurope.processmanager.ProcessManagerContainer;
 
 import java.util.UUID;
 

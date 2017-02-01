@@ -7,6 +7,6 @@ class Cashier implements Handler<TakePayment> {
 
   @Override
   public void handle(TakePayment takePayment) {
-    System.out.println(takePayment.getOrder());
+    System.out.println("Taking payment on " + takePayment.getOrder());
   }
 }

@@ -3,9 +3,11 @@ package dddeurope;
 import dddeurope.actor.ActorFactory;
 import dddeurope.actor.Waiter;
 import dddeurope.message.CookFood;
+import dddeurope.message.OrderPlaced;
 import dddeurope.message.PriceOrder;
 import dddeurope.message.TakePayment;
 import dddeurope.monitoring.MonitoringDaemon;
+import dddeurope.processmanager.ProcessManagerContainer;
 import dddeurope.repeater.RepeaterFactory;
 
 import static java.util.Arrays.asList;
@@ -18,6 +20,7 @@ class Restaurant {
     RepeaterFactory repeaterFactory = new RepeaterFactory();
     MonitoringDaemon monitoringDaemon = new MonitoringDaemon();
     TopicBasedPublishSubscribe topicBasedPublishSubscribe = new TopicBasedPublishSubscribe();
+    ProcessManagerContainer processManagerContainer = new ProcessManagerContainer(topicBasedPublishSubscribe);
 
     Handler cashier = actorFactory.createCashier();
 
@@ -40,6 +43,7 @@ class Restaurant {
     topicBasedPublishSubscribe.subscribe(cashier, TakePayment.class);
     topicBasedPublishSubscribe.subscribe(johnTheManager, PriceOrder.class);
     topicBasedPublishSubscribe.subscribe(kitchen, CookFood.class);
+    topicBasedPublishSubscribe.subscribe(processManagerContainer, OrderPlaced.class);
 
     //start
     monitoringDaemon.start();
@@ -49,6 +53,7 @@ class Restaurant {
     jamie.start();
     piet.start();
     kitchen.start();
+    processManagerContainer.start();
 
     // stable - feed in orders
     order(waiter, 100, topicBasedPublishSubscribe);
