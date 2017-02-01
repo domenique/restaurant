@@ -2,10 +2,9 @@ package dddeurope;
 
 import dddeurope.actor.ActorFactory;
 import dddeurope.actor.Waiter;
-import dddeurope.message.MsgBase;
-import dddeurope.message.OrderCooked;
-import dddeurope.message.OrderPlaced;
-import dddeurope.message.OrderPriced;
+import dddeurope.message.CookFood;
+import dddeurope.message.PriceOrder;
+import dddeurope.message.TakePayment;
 import dddeurope.monitoring.MonitoringDaemon;
 import dddeurope.repeater.RepeaterFactory;
 
@@ -20,28 +19,27 @@ class Restaurant {
     MonitoringDaemon monitoringDaemon = new MonitoringDaemon();
     TopicBasedPublishSubscribe topicBasedPublishSubscribe = new TopicBasedPublishSubscribe();
 
-    Handler<OrderPriced> cashier = actorFactory.createCashier();
+    Handler cashier = actorFactory.createCashier();
 
-    ThreadedHandler<OrderCooked> johnTheManager = actorFactory.createAssistantManager(topicBasedPublishSubscribe, "John The Manager");
-    ThreadedHandler<OrderPlaced> gordon = actorFactory.createCook(topicBasedPublishSubscribe, "Gordon Ramsy", 1000);
-    ThreadedHandler<OrderPlaced> jamie = actorFactory.createCook(topicBasedPublishSubscribe, "Jamie Oliver", 1303);
-    ThreadedHandler<OrderPlaced> piet = actorFactory.createCook(topicBasedPublishSubscribe, "Piet Huysentruyt", 2500);
+    ThreadedHandler johnTheManager = actorFactory.createAssistantManager(topicBasedPublishSubscribe, "John The Manager");
+    ThreadedHandler gordon = actorFactory.createCook(topicBasedPublishSubscribe, "Gordon Ramsy", 1000);
+    ThreadedHandler jamie = actorFactory.createCook(topicBasedPublishSubscribe, "Jamie Oliver", 1303);
+    ThreadedHandler piet = actorFactory.createCook(topicBasedPublishSubscribe, "Piet Huysentruyt", 2500);
 
     monitoringDaemon.monitor(johnTheManager);
     monitoringDaemon.monitor(gordon);
     monitoringDaemon.monitor(jamie);
     monitoringDaemon.monitor(piet);
 
-    ThreadedHandler<OrderPlaced> kitchen = repeaterFactory
-        .createThreadedMoreFairRepeater(asList(gordon, jamie, piet), "Kitchen repeater");
+    ThreadedHandler kitchen = repeaterFactory.createThreadedMoreFairRepeater(asList(gordon, jamie, piet), "Kitchen repeater");
     monitoringDaemon.monitor(kitchen);
 
     Waiter waiter = actorFactory.createWaiter(topicBasedPublishSubscribe);
 
     //subscribe
-    topicBasedPublishSubscribe.subscribe(cashier, OrderPriced.class);
-    topicBasedPublishSubscribe.subscribe(johnTheManager, OrderCooked.class);
-    topicBasedPublishSubscribe.subscribe(kitchen, OrderPlaced.class);
+    topicBasedPublishSubscribe.subscribe(cashier, TakePayment.class);
+    topicBasedPublishSubscribe.subscribe(johnTheManager, PriceOrder.class);
+    topicBasedPublishSubscribe.subscribe(kitchen, CookFood.class);
 
     //start
     monitoringDaemon.start();

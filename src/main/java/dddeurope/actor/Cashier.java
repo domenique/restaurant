@@ -1,12 +1,12 @@
 package dddeurope.actor;
 
 import dddeurope.Handler;
-import dddeurope.message.OrderPriced;
+import dddeurope.message.TakePayment;
 
-class Cashier implements Handler<OrderPriced> {
+class Cashier implements Handler<TakePayment> {
 
   @Override
-  public void handle(OrderPriced orderPriced) {
-    System.out.println(orderPriced.getOrder());
+  public void handle(TakePayment takePayment) {
+    System.out.println(takePayment.getOrder());
   }
 }

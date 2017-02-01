@@ -1,11 +1,11 @@
 package dddeurope.ttl;
 
 import dddeurope.Handler;
-import dddeurope.message.OrderPlaced;
+import dddeurope.message.CookFood;
 
 public class TimeToLiveFactory {
 
-  public Handler<OrderPlaced> create(Handler<OrderPlaced> child) {
+  public Handler<CookFood> create(Handler<CookFood> child) {
     return new TimeToLiveChecker(child);
   }
 }

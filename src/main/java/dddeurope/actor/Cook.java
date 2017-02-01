@@ -2,10 +2,10 @@ package dddeurope.actor;
 
 import dddeurope.Handler;
 import dddeurope.Publisher;
+import dddeurope.message.CookFood;
 import dddeurope.message.OrderCooked;
-import dddeurope.message.OrderPlaced;
 
-class Cook implements Handler<OrderPlaced> {
+class Cook implements Handler<CookFood> {
 
   private final Publisher publisher;
   private String name;
@@ -18,7 +18,7 @@ class Cook implements Handler<OrderPlaced> {
   }
 
   @Override
-  public void handle(OrderPlaced orderPlaced) {
+  public void handle(CookFood orderPlaced) {
     System.out.println("Cook " + name + " is cooking " + orderPlaced.getOrder());
     sleep(cookTime);
     orderPlaced.getOrder().setCookTime(cookTime);

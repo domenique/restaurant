@@ -4,8 +4,9 @@ import dddeurope.Handler;
 import dddeurope.Publisher;
 import dddeurope.message.OrderCooked;
 import dddeurope.message.OrderPriced;
+import dddeurope.message.PriceOrder;
 
-class AssistantManager implements Handler<OrderCooked> {
+class AssistantManager implements Handler<PriceOrder> {
 
   private final Publisher publisher;
 
@@ -14,12 +15,12 @@ class AssistantManager implements Handler<OrderCooked> {
   }
 
   @Override
-  public void handle(OrderCooked orderCooked) {
+  public void handle(PriceOrder priceOrder) {
     System.out.println("Calculating prices");
     sleep();
-    orderCooked.getOrder().getItems()
-        .forEach(item -> orderCooked.getOrder().setSubtotal(orderCooked.getOrder().getSubtotal() + item.calculateTotalPrice()));
-    publisher.publish(new OrderPriced(orderCooked.getOrder(), orderCooked));
+    priceOrder.getOrder().getItems()
+        .forEach(item -> priceOrder.getOrder().setSubtotal(priceOrder.getOrder().getSubtotal() + item.calculateTotalPrice()));
+    publisher.publish(new OrderPriced(priceOrder.getOrder(), priceOrder));
   }
 
   private void sleep() {
